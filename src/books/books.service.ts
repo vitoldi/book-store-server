@@ -3,10 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Book, BookDocument } from './schemas/book.schema';
 import {Model} from 'mongoose'
 import { CreateBookDto } from './dto/book.dto';
+import { FileService, FileType } from 'src/file/file.service';
 
 @Injectable()
 export class BooksService {
-  constructor(@InjectModel(Book.name) private bookModel: Model<BookDocument> ) {}
+  constructor(@InjectModel(Book.name) private bookModel: Model<BookDocument>,
+              private readonly fileService: FileService ) {}
 
   async getAllBooks(): Promise<Book[]> {
     return this.bookModel.find().exec()
@@ -16,8 +18,9 @@ export class BooksService {
     return this.bookModel.findById(id)
   }
 
-  async createBook(bookDto: CreateBookDto): Promise<Book> {
-    const newBook = new this.bookModel(bookDto)
+  async createBook(bookDto: CreateBookDto, file): Promise<Book> {
+    const filePath = this.fileService.createFile(FileType.IMAGE, file)
+    const newBook = new this.bookModel({...bookDto, image: filePath})
     return newBook.save()
   }
 
