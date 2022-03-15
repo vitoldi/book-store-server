@@ -18,7 +18,7 @@ export class FileService {
                 fs.mkdirSync(filePath, {recursive: true})
             }
             fs.writeFileSync(path.resolve(filePath, fileName), file.buffer)
-            return `${type}/${fileName}`
+            return `${fileName}`
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR)
         }
