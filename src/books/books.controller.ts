@@ -1,15 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiListDto, SearchParamsDto } from 'src/types/api-common-types';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/book.dto';
+import { Book } from './schemas/book.schema';
 
-@Controller('/books')
+@Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  @Get()
-  async getBooks() {
-    return this.booksService.getAllBooks()
+  
+  @Post('search')
+  async getBooks(@Body() searchParams: SearchParamsDto) {
+    return await this.booksService.getAllBooks(searchParams)
   }
 
   @Get(':id')
@@ -17,7 +20,7 @@ export class BooksController {
     return this.booksService.findBook(id)
   }
 
-  @Post()
+  @Post('add')
   @UseInterceptors(FileInterceptor('image'))
   async createBook(@UploadedFile() file: Express.Multer.File, @Body() book: CreateBookDto) {
     return this.booksService.createBook(book, file);

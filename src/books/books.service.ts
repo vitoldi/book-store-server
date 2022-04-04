@@ -4,14 +4,16 @@ import { Book, BookDocument } from './schemas/book.schema';
 import {Model} from 'mongoose'
 import { CreateBookDto } from './dto/book.dto';
 import { FileService, FileType } from 'src/file/file.service';
+import { ApiListDto, SearchParamsDto } from 'src/types/api-common-types';
 
 @Injectable()
 export class BooksService {
   constructor(@InjectModel(Book.name) private bookModel: Model<BookDocument>,
               private readonly fileService: FileService ) {}
 
-  async getAllBooks(): Promise<Book[]> {
-    return this.bookModel.find().exec()
+  async getAllBooks({limit, offset}: SearchParamsDto): Promise<ApiListDto<Book>> {
+    const books = await this.bookModel.find().exec()
+    return {items: books.slice(offset, offset + limit), total: books.length}
   }
 
   async findBook(id: string): Promise<Book> {
