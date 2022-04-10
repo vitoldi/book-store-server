@@ -1,9 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiListDto, SearchParamsDto } from 'src/types/api-common-types';
+import { SearchParamsDto } from 'src/types/api-common-types';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/book.dto';
-import { Book } from './schemas/book.schema';
 
 @Controller('books')
 export class BooksController {
